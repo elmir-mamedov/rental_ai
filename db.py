@@ -28,8 +28,21 @@ def init_db():
                 created_at TIMESTAMP DEFAULT NOW()
             );
             """)
+
+            cur.execute("""
+                CREATE TABLE IF NOT EXISTS url_queue (
+                    url TEXT PRIMARY KEY,
+                    processed BOOLEAN DEFAULT FALSE,
+                    created_at TIMESTAMP DEFAULT NOW()
+                );
+                """)
             conn.commit()
-    print("Database initialized ✅")
+
+
+    print("Databases initialized ✅")
+
+
+
 
 # Insert a new listing
 '''Stores all scraped property listings (URL, title, price, location, description, etc.).'''

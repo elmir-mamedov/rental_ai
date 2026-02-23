@@ -1,0 +1,21 @@
+SELECT COUNT(*) FROM url_queue;
+
+SELECT
+    split_part(url, '/', 3) AS domain,
+    COUNT(*) AS count
+FROM url_queue
+GROUP BY domain
+ORDER BY count DESC;
+
+SELECT
+    split_part(url, '/', 4) AS path_segment,
+    COUNT(*) AS count
+FROM url_queue
+GROUP BY path_segment
+ORDER BY count DESC;
+
+SELECT
+    processed,
+    COUNT(*) AS num_urls
+FROM url_queue
+GROUP BY processed;

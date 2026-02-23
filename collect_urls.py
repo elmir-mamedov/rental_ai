@@ -2,6 +2,7 @@
 Collect listing URLs from Bezrealitky and store them in the database queue.
 """
 import asyncio
+from db import get_connection
 from sitemap import fetch_xml, parse_sitemap
 from db import insert_url
 
@@ -24,10 +25,21 @@ async def collect():
     print(f"Discovered {len(urls)} URLs")
 
     # Insert URLs into url_queue
-    for url in urls:
-        insert_url(url)
 
-    print("All URLs inserted into the queue.")
+    with get_connection() as conn:
+        with conn.cursor() as cur:
+            cur.executemany(
+                """
+                INSERT INTO url_queue (url)
+                VALUES (%s)
+                ON CONFLICT (url) DO NOTHING;
+                """,
+                [(url,) for url in urls]
+            )
+            inserted = cur.rowcount
+        conn.commit()
+
+    print(f"Inserted {inserted} new URLs.")
 
 
 if __name__ == "__main__":
