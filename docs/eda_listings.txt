@@ -1,0 +1,66 @@
+SELECT COUNT(*) AS total_rows FROM listings;
+
+SELECT currency, COUNT(*) AS count
+FROM listings
+GROUP BY currency
+ORDER BY count DESC;
+
+SELECT location, COUNT(*) AS count
+FROM listings
+GROUP BY location
+ORDER BY count DESC
+LIMIT 20;
+
+-- Show detailed info for listings with price = 0 or very low
+SELECT id, url, title, price, currency, location, posted_date
+FROM listings
+WHERE price <= 1000 AND currency = 'CZK'
+ORDER BY price ASC
+LIMIT 50;
+
+-- Count how many listings have missing descriptions
+SELECT
+    COUNT(*) AS total_listings,
+    COUNT(description_en) AS english_descriptions,
+    COUNT(description_native) AS native_descriptions
+FROM listings;
+
+-- Stats on description lengths
+SELECT
+    AVG(LENGTH(description_en)) AS avg_len_en,
+    MIN(LENGTH(description_en)) AS min_len_en,
+    MAX(LENGTH(description_en)) AS max_len_en,
+    AVG(LENGTH(description_native)) AS avg_len_native,
+    MIN(LENGTH(description_native)) AS min_len_native,
+    MAX(LENGTH(description_native)) AS max_len_native
+FROM listings;
+
+-- Count listings with empty or very short descriptions
+SELECT
+    COUNT(*) AS empty_en,
+    COUNT(*) FILTER (WHERE LENGTH(description_en) < 20) AS short_en,
+    COUNT(*) AS empty_native,
+    COUNT(*) FILTER (WHERE LENGTH(description_native) < 20) AS short_native
+FROM listings;
+
+SELECT id, url, title, price, LENGTH(description_native) AS len_native
+FROM listings
+WHERE LENGTH(description_native) <= 20
+  AND title NOT ILIKE '%Inzerát již není v nabídce%'
+ORDER BY len_native ASC
+LIMIT 50;
+
+-- Same but with created_at filter
+SELECT
+    COUNT(*) FILTER (WHERE LENGTH(description_en) < 20) AS short_en,
+    COUNT(*) FILTER (WHERE LENGTH(description_native) < 20) AS short_native
+FROM listings
+WHERE created_at::time > TIME '16:40:00';
+
+SELECT id, url, title, price, LENGTH(description_native) AS len_native
+FROM listings
+WHERE LENGTH(description_native) <= 20
+  AND title NOT ILIKE '%Inzerát již není v nabídce%'
+  AND created_at::time > TIME '16:40:00'
+ORDER BY len_native ASC
+LIMIT 50;

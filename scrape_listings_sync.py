@@ -4,7 +4,7 @@ from lxml import html
 from db import get_unprocessed_urls, insert_listing, mark_url_processed
 import re
 
-BATCH_SIZE = 500  # number of URLs to process per run
+BATCH_SIZE = 2000  # number of URLs to process per run
 
 def scrape_listing(url):
     try:
@@ -46,9 +46,23 @@ def scrape_listing(url):
         location = tree.xpath('//h1/span[contains(@class,"text-grey-dark")]/text()')
         location_clean = location[0].strip() if location else None
 
-        # Description
-        description_parts = tree.xpath('//div[contains(@id,"english")]//p[contains(@class,"text-perex")]/text()')
-        description_clean = "\n".join(d.strip() for d in description_parts if d.strip())
+        # Description in english
+        description_parts_en = tree.xpath('//div[contains(@id,"english")]//p[contains(@class,"text-perex")]/text()')
+        description_clean_en = "\n".join(d.strip() for d in description_parts_en if d.strip())
+
+        # Description in native
+        desc_native_1 = tree.xpath(
+            '//div[contains(@id,"native")]//p[contains(@class,"text-perex")]/text()'
+        )  # this is for normal written in native
+        desc_native_2 = tree.xpath(
+            '//div[contains(@id,"tabpane-cs")]//p[contains(@class,"text-perex")]/text()'
+        )  # this is if description was translated to czech language by AI
+
+        description_parts_native = desc_native_1 + desc_native_2
+
+        description_clean_native = "\n".join(
+            d.strip() for d in description_parts_native if d.strip()
+        )
 
         # Insert into DB
         insert_listing(
@@ -58,7 +72,8 @@ def scrape_listing(url):
             currency=currency,
             location=location_clean,
             posted_date=None,  # you can later extract this if needed
-            description=description_clean
+            description_en=description_clean_en,
+            description_native = description_clean_native
         )
         mark_url_processed(url)
         print("Scraped ✅", url)

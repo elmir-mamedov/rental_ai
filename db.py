@@ -24,7 +24,8 @@ def init_db():
                 currency TEXT,
                 location TEXT,
                 posted_date DATE,
-                description TEXT,
+                description_en TEXT,
+                description_native TEXT,
                 created_at TIMESTAMP DEFAULT NOW()
             );
             """)
@@ -46,15 +47,15 @@ def init_db():
 
 # Insert a new listing
 '''Stores all scraped property listings (URL, title, price, location, description, etc.).'''
-def insert_listing(url, title=None, price=None, currency=None, location=None, posted_date=None, description=None):
+def insert_listing(url, title=None, price=None, currency=None, location=None, posted_date=None, description_en=None, description_native=None):
     with get_connection() as conn:
         with conn.cursor() as cur:
             cur.execute("""
-            INSERT INTO listings (url, title, price, currency, location, posted_date, description)
-            VALUES (%s, %s, %s, %s, %s, %s, %s)
+            INSERT INTO listings (url, title, price, currency, location, posted_date, description_en, description_native)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
             ON CONFLICT (url) DO NOTHING
             RETURNING id;
-            """, (url, title, price, currency, location, posted_date, description))
+            """, (url, title, price, currency, location, posted_date, description_en, description_native))
             listing_id = cur.fetchone()
             conn.commit()
             return listing_id
