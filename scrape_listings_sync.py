@@ -4,7 +4,7 @@ from lxml import html
 from db import get_unprocessed_urls, insert_listing, mark_url_processed
 import re
 
-BATCH_SIZE = 8000  # number of URLs to process per run
+BATCH_SIZE = 19000  # number of URLs to process per run
 
 def scrape_listing(url):
     try:
@@ -83,7 +83,7 @@ def scrape_listing(url):
         construction_of_building = normalized_details.get("konstrukce budovy")
         condition = normalized_details.get("stav")
         equipped = normalized_details.get("vybaveno")
-        area_of_property = normalized_details.get("plocha pozemnku")
+        area_of_property = normalized_details.get("plocha pozemku")
         usable_area = normalized_details.get("užitná plocha")
         floor = normalized_details.get("podlaží")
         disposition = normalized_details.get("dispozice")
@@ -95,7 +95,7 @@ def scrape_listing(url):
         boolean_features = {
             "garage": "Garáž",
             "elevator": "Výtah",
-            "balcony": "Balkon",  # example
+            "balcony": "Balkón",
             "parking": "Parkování",
             "barrier-free_access": "Bezbariérový přístup",
             "cellar": "Sklep",

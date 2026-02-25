@@ -1,3 +1,4 @@
+# db.py
 import os
 import psycopg # popular PostgreSQL adapter for the Python.
 from psycopg.rows import dict_row

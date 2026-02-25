@@ -9,7 +9,8 @@ url5 = 'https://www.bezrealitky.cz/nemovitosti-byty-domy/907812-nabidka-pronajem
 url6 = 'https://www.bezrealitky.cz/nemovitosti-byty-domy/983818-nabidka-pronajem-bytu-komoranska-praha'
 url7 = 'https://www.bezrealitky.cz/nemovitosti-byty-domy/993981-nabidka-pronajem-bytu-cakovicka-praha'
 url8 = 'https://www.bezrealitky.cz/nemovitosti-byty-domy/989720-nabidka-prodej-domu-salzburg-stadtrand-sud'
-r = httpx.get(url8)
+url9 = 'https://www.bezrealitky.cz/nemovitosti-byty-domy/990171-nabidka-prodej-domu-lipno-nad-vltavou'
+r = httpx.get(url9)
 tree = html.fromstring(r.text)
 
 price = tree.xpath(
@@ -61,7 +62,7 @@ normalized_details = {k.strip().lower(): v for k, v in details.items()}
 construction_of_building = normalized_details.get("konstrukce budovy")
 condition = normalized_details.get("stav")
 equipped = normalized_details.get("vybaveno")
-area_of_the_property = normalized_details.get("plocha pozemnku")
+area_of_the_property = normalized_details.get("plocha pozemku")
 usable_area = normalized_details.get("užitná plocha")
 floor = normalized_details.get("podlaží")
 disposition = normalized_details.get("dispozice")
@@ -79,7 +80,7 @@ print(f"Konstrukce budovy: {construction_of_building}")
 print(f"Stav: {condition}")
 print(f"Vybaveno: {equipped}")
 print(f"Uzitna plocha: {usable_area} m2")
-print(f"Plocha pozemnku: {area_of_the_property}")
+print(f"Plocha pozemku: {area_of_the_property}")
 print(f"Floor: {floor}")
 print(f"Disposition: {disposition}")
 print(f"Ownership: {ownership}")
@@ -90,7 +91,7 @@ print(f"Age: {age}")
 boolean_features = {
     "garage": "Garáž",
     "elevator": "Výtah",
-    "balcony": "Balkon",       # example
+    "balcony": "Balkón",       # example
     "parking": "Parkování",
     "barrier-free_access": "Bezbariérový přístup",
     "cellar": "Sklep",
